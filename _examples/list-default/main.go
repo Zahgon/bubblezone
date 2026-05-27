@@ -26,70 +26,28 @@ type item struct {
 	desc  string
 }
 
-func (i item) Title() string       { return zone.Mark(i.id, i.title) }
-func (i item) Description() string { return i.desc }
-func (i item) FilterValue() string { return zone.Mark(i.id, i.title) }
+func (i item) Title() string       { _ = "STUB: not implemented"; return "" }
+func (i item) Description() string { _ = "STUB: not implemented"; return "" }
+func (i item) FilterValue() string { _ = "STUB: not implemented"; return "" }
 
 type model struct {
 	list list.Model
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
+func (m model) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		if msg.String() == "ctrl+c" {
-			return m, tea.Quit
-		}
-	case tea.WindowSizeMsg:
-		h, v := docStyle.GetFrameSize()
-		m.list.SetSize(msg.Width-h, msg.Height-v)
-	case tea.MouseMsg:
-		switch msg := msg.(type) {
-		case tea.MouseWheelMsg:
-			switch msg.Button {
-			case tea.MouseWheelUp:
-				m.list.CursorUp()
-				return m, nil
-			case tea.MouseWheelDown:
-				m.list.CursorDown()
-				return m, nil
-			}
-		case tea.MouseReleaseMsg:
-			if msg.Button != tea.MouseLeft {
-				break
-			}
-			for i, listItem := range m.list.VisibleItems() {
-				v, _ := listItem.(item)
-				// Check each item to see if it's in bounds.
-				if zone.Get(v.id).InBounds(msg) {
-					// If so, select it in the list.
-					m.list.Select(i)
-					break
-				}
-			}
-		}
-
-		return m, nil
-	}
-
-	var cmd tea.Cmd
-	m.list, cmd = m.list.Update(msg)
-	return m, cmd
+	_ = "STUB: not implemented"
+	return *new(tea.Model), *new(tea.Cmd)
 }
 
-func (m model) View() tea.View {
-	var view tea.View
-	view.AltScreen = true
-	view.MouseMode = tea.MouseModeCellMotion
+// Check each item to see if it's in bounds.
 
-	// Wrap the main models view in [zone.Scan].
-	view.SetContent(zone.Scan(docStyle.Render(m.list.View())))
-	return view
-}
+// If so, select it in the list.
+
+func (m model) View() tea.View { _ = "STUB: not implemented"; return *new(tea.View) }
+
+// Wrap the main models view in [zone.Scan].
 
 func main() {
 	// Initialize a global zone manager, so we don't have to pass around the manager

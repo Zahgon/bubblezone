@@ -6,8 +6,6 @@ package main
 
 import (
 	tea "charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
-	zone "github.com/lrstanley/bubblezone/v2"
 )
 
 type history struct {
@@ -19,53 +17,17 @@ type history struct {
 	items  []string
 }
 
-func (m *history) Init() tea.Cmd {
-	return nil
+func (m *history) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
+
+func (m *history) Update(msg tea.Msg) tea.Cmd {
+	_ = "STUB: not implemented" //nolint:unparam
+	return *new(tea.Cmd)
 }
 
-func (m *history) Update(msg tea.Msg) tea.Cmd { //nolint:unparam
-	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		m.height = msg.Height
-		m.width = msg.Width
-	case tea.MouseReleaseMsg:
-		if msg.Button != tea.MouseLeft {
-			return nil
-		}
+// Check each item to see if it's in bounds.
 
-		for _, item := range m.items {
-			// Check each item to see if it's in bounds.
-			if zone.Get(m.id + item).InBounds(msg) {
-				m.active = item
-				break
-			}
-		}
-	}
-	return nil
-}
+func (m *history) View() string { _ = "STUB: not implemented"; return "" }
 
-func (m *history) View() string {
-	historyStyle := lipgloss.NewStyle().
-		Align(lipgloss.Left).
-		Foreground(lipgloss.Color("#FAFAFA")).
-		Background(subtle).
-		Margin(0, 1).
-		Padding(1, 2).
-		Width((m.width / len(m.items)) - 2).
-		Height(m.height).
-		MaxHeight(m.height)
+// Customize the active item.
 
-	out := []string{}
-
-	for _, item := range m.items {
-		if item == m.active {
-			// Customize the active item.
-			out = append(out, zone.Mark(m.id+item, historyStyle.Background(highlight).Render(item)))
-		} else {
-			// Make sure to mark all zones.
-			out = append(out, zone.Mark(m.id+item, historyStyle.Render(item)))
-		}
-	}
-
-	return lipgloss.JoinHorizontal(lipgloss.Top, out...)
-}
+// Make sure to mark all zones.

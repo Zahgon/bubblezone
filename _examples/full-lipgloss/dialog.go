@@ -7,7 +7,6 @@ package main
 import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	zone "github.com/lrstanley/bubblezone/v2"
 )
 
 var (
@@ -36,48 +35,13 @@ type dialog struct {
 	question string
 }
 
-func (m *dialog) Init() tea.Cmd {
-	return nil
+func (m *dialog) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
+
+func (m *dialog) GetHeight() int { _ = "STUB: not implemented"; return 0 }
+
+func (m *dialog) Update(msg tea.Msg) tea.Cmd {
+	_ = "STUB: not implemented" //nolint:unparam
+	return *new(tea.Cmd)
 }
 
-func (m *dialog) GetHeight() int {
-	return lipgloss.Height(m.View())
-}
-
-func (m *dialog) Update(msg tea.Msg) tea.Cmd { //nolint:unparam
-	switch msg := msg.(type) {
-	case tea.MouseReleaseMsg:
-		if msg.Button != tea.MouseLeft {
-			return nil
-		}
-
-		if zone.Get(m.id + "confirm").InBounds(msg) {
-			m.active = "confirm"
-		} else if zone.Get(m.id + "cancel").InBounds(msg) {
-			m.active = "cancel"
-		}
-
-		return nil
-	}
-	return nil
-}
-
-func (m *dialog) View() string {
-	var okButton, cancelButton string
-
-	if m.active == "confirm" {
-		okButton = activeButtonStyle.Render("Yes")
-		cancelButton = buttonStyle.Render("Maybe")
-	} else {
-		okButton = buttonStyle.Render("Yes")
-		cancelButton = activeButtonStyle.Render("Maybe")
-	}
-
-	question := lipgloss.NewStyle().Width(27).Align(lipgloss.Center).Render(m.question)
-	buttons := lipgloss.JoinHorizontal(
-		lipgloss.Top,
-		zone.Mark(m.id+"confirm", okButton),
-		zone.Mark(m.id+"cancel", cancelButton),
-	)
-	return dialogBoxStyle.Render(lipgloss.JoinVertical(lipgloss.Center, question, buttons))
-}
+func (m *dialog) View() string { _ = "STUB: not implemented"; return "" }

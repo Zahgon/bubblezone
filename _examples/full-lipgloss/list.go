@@ -7,7 +7,6 @@ package main
 import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	zone "github.com/lrstanley/bubblezone/v2"
 )
 
 var (
@@ -42,51 +41,15 @@ type list struct {
 	items []listItem
 }
 
-func (m *list) Init() tea.Cmd {
-	return nil
+func (m *list) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
+
+func (m *list) GetHeight() int { _ = "STUB: not implemented"; return 0 }
+
+func (m *list) Update(msg tea.Msg) tea.Cmd {
+	_ = "STUB: not implemented" //nolint:unparam
+	return *new(tea.Cmd)
 }
 
-func (m *list) GetHeight() int {
-	return lipgloss.Height(m.View())
-}
+// Check each item to see if it's in bounds.
 
-func (m *list) Update(msg tea.Msg) tea.Cmd { //nolint:unparam
-	switch msg := msg.(type) {
-	case tea.MouseReleaseMsg:
-		if msg.Button != tea.MouseLeft {
-			return nil
-		}
-
-		for i, item := range m.items {
-			// Check each item to see if it's in bounds.
-			if zone.Get(m.id + item.name).InBounds(msg) {
-				m.items[i].done = !m.items[i].done
-				break
-			}
-		}
-
-		return nil
-	}
-	return nil
-}
-
-func (m *list) View() string {
-	out := []string{listHeader.BorderForeground(subtle).Render(m.title)}
-
-	for _, item := range m.items {
-		if item.done {
-			out = append(out, zone.Mark(
-				m.id+item.name,
-				checkMark.Foreground(special).String()+
-					listDoneStyle.Foreground(completed).Render(item.name),
-			))
-			continue
-		}
-
-		out = append(out, zone.Mark(m.id+item.name, listItemStyle.Render(item.name)))
-	}
-
-	return listStyle.BorderForeground(subtle).Render(
-		lipgloss.JoinVertical(lipgloss.Left, out...),
-	)
-}
+func (m *list) View() string { _ = "STUB: not implemented"; return "" }

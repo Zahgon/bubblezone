@@ -6,10 +6,8 @@ package zone
 
 import (
 	"context"
-	"strconv"
 	"sync"
 	"sync/atomic"
-	"time"
 )
 
 const (
@@ -38,20 +36,7 @@ var (
 //
 // The zone manager is enabled by default, and can be toggled by calling
 // SetEnabled().
-func New() (m *Manager) {
-	m = &Manager{
-		setChan: make(chan *ZoneInfo, 200),
-		zones:   make(map[string]*ZoneInfo),
-		ids:     make(map[string]string),
-		rids:    make(map[string]string),
-	}
-
-	m.ctx, m.cancel = context.WithCancel(context.Background())
-	m.enabled.Store(true)
-	go m.zoneWorker()
-
-	return m
-}
+func New() (m *Manager) { _ = "STUB: not implemented"; return nil }
 
 // Manager holds the state of the zone manager, including ID zones and
 // zones of components.
@@ -70,40 +55,30 @@ type Manager struct {
 	rids map[string]string // generated control sequence ID -> user ID.
 }
 
-func (m *Manager) checkInitialized() {
-	if m == nil {
-		panic("manager not initialized")
-	}
-}
+func (m *Manager) checkInitialized() { _ = "STUB: not implemented"; return }
 
 // Close stops the manager worker.
 func (m *Manager) Close() {
-	m.cancel()
+	_ = "STUB: not implemented"
+
+	// SetEnabled enables or disables the zone manager. When disabled, the zone manager
+	// will still parse zone information, however it will immediately drop it and remove
+	// zone markers from the resulting output.
+	//
+	// The zone manager is enabled by default.
+	return
 }
 
-// SetEnabled enables or disables the zone manager. When disabled, the zone manager
-// will still parse zone information, however it will immediately drop it and remove
-// zone markers from the resulting output.
-//
-// The zone manager is enabled by default.
-func (m *Manager) SetEnabled(enabled bool) {
-	m.enabled.Store(enabled)
+func (m *Manager) SetEnabled(enabled bool) { _ = "STUB: not implemented"; return }
 
-	if !enabled {
-		// Tell the worker to clear all zones if we're disabling the manager.
-		iteration := time.Now().Nanosecond()
-		m.setChan <- &ZoneInfo{iteration: iteration}
-	}
-}
+// Tell the worker to clear all zones if we're disabling the manager.
 
 // Enabled returns whether the zone manager is enabled or not. When disabled,
 // the zone manager will still parse zone information, however it will immediately
 // drop it and remove zone markers from the resulting output.
 //
 // The zone manager is enabled by default.
-func (m *Manager) Enabled() bool {
-	return m.enabled.Load()
-}
+func (m *Manager) Enabled() bool { _ = "STUB: not implemented"; return false }
 
 // NewPrefix generates a zone marker ID prefix, which can help prevent overlapping
 // zone markers between multiple components. Each call to NewPrefix() returns a
@@ -141,9 +116,7 @@ func (m *Manager) Enabled() bool {
 //	func (m model) View() string {
 //		return zone.Mark(m.id+"some-other-id", "rendered stuff here")
 //	}
-func (m *Manager) NewPrefix() string {
-	return "zone_" + strconv.FormatInt(atomic.AddInt64(&prefixCounter, 1), 10) + "__"
-}
+func (m *Manager) NewPrefix() string { _ = "STUB: not implemented"; return "" }
 
 // Mark returns v wrapped with a start and end ANSI sequence to allow the zone
 // manager to determine where the zone is, including its window offsets. The ANSI
@@ -151,78 +124,22 @@ func (m *Manager) NewPrefix() string {
 // width calculations.
 //
 // When the zone manager is disabled, Mark() will return v without any changes.
-func (m *Manager) Mark(id, v string) string {
-	if !m.Enabled() {
-		return v
-	}
-
-	if id == "" || v == "" {
-		return v
-	}
-
-	m.idMu.RLock()
-	gid := m.ids[id]
-	m.idMu.RUnlock()
-
-	if gid != "" {
-		return gid + v + gid
-	}
-
-	m.idMu.Lock()
-	gid = string(identStart) + string(identBracket) + strconv.FormatInt(atomic.AddInt64(&markerCounter, 1), 10) + string(identEnd)
-	m.ids[id] = gid
-	m.rids[gid] = id
-	m.idMu.Unlock()
-
-	return gid + v + gid
-}
+func (m *Manager) Mark(id, v string) string { _ = "STUB: not implemented"; return "" }
 
 // Clear removes any stored zones for the given ID.
-func (m *Manager) Clear(id string) {
-	m.zoneMu.Lock()
-	delete(m.zones, id)
-	m.zoneMu.Unlock()
-}
+func (m *Manager) Clear(id string) { _ = "STUB: not implemented"; return }
 
 // Get returns the zone info of the given ID. If the ID is not known (yet),
 // Get() returns nil.
-func (m *Manager) Get(id string) (zone *ZoneInfo) {
-	m.zoneMu.RLock()
-	zone = m.zones[id]
-	m.zoneMu.RUnlock()
-	return zone
-}
+func (m *Manager) Get(id string) (zone *ZoneInfo) { _ = "STUB: not implemented"; return nil }
 
 // getReverse returns the component ID from a generated ID (that includes ANSI
 // escape codes).
-func (m *Manager) getReverse(id string) (resolved string) {
-	m.idMu.RLock()
-	resolved = m.rids[id]
-	m.idMu.RUnlock()
-	return resolved
-}
+func (m *Manager) getReverse(id string) (resolved string) { _ = "STUB: not implemented"; return "" }
 
-func (m *Manager) zoneWorker() {
-	for {
-		select {
-		case <-m.ctx.Done():
-			return
-		case xy := <-m.setChan:
-			m.zoneMu.Lock()
-			if xy.id != "" {
-				m.zones[m.getReverse(xy.id)] = xy
-			} else {
-				// Assume previous iterations are cleared.
-				for k := range m.zones {
-					if m.zones[k].iteration != xy.iteration {
-						delete(m.zones, k)
-					}
-				}
-			}
-			m.zoneMu.Unlock()
-		}
-	}
-}
+func (m *Manager) zoneWorker() { _ = "STUB: not implemented"; return }
+
+// Assume previous iterations are cleared.
 
 // Scan will scan the view output, searching for zone markers, returning the
 // original view output with the zone markers stripped. Scan() should be used
@@ -239,10 +156,4 @@ func (m *Manager) zoneWorker() {
 // the input for zone markers, as some users may cache generated views. In most
 // situations when the zone manager is disabled (and thus Mark() returns input
 // unchanged), Scan() will not need to do any work.
-func (m *Manager) Scan(v string) string {
-	iteration := time.Now().Nanosecond()
-	s := newScanner(m, v, iteration)
-	s.run()
-	m.setChan <- &ZoneInfo{iteration: iteration}
-	return s.input
-}
+func (m *Manager) Scan(v string) string { _ = "STUB: not implemented"; return "" }

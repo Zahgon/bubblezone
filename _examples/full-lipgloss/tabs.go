@@ -5,11 +5,8 @@
 package main
 
 import (
-	"strings"
-
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
-	zone "github.com/lrstanley/bubblezone/v2"
 )
 
 var (
@@ -54,52 +51,17 @@ type tabs struct {
 	items  []string
 }
 
-func (m *tabs) Init() tea.Cmd {
-	return nil
+func (m *tabs) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
+
+func (m *tabs) GetHeight() int { _ = "STUB: not implemented"; return 0 }
+
+func (m *tabs) Update(msg tea.Msg) tea.Cmd {
+	_ = "STUB: not implemented" //nolint:unparam
+	return *new(tea.Cmd)
 }
 
-func (m *tabs) GetHeight() int {
-	return lipgloss.Height(m.View())
-}
+// Check each item to see if it's in bounds.
 
-func (m *tabs) Update(msg tea.Msg) tea.Cmd { //nolint:unparam
-	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		m.width = msg.Width
-	case tea.MouseReleaseMsg:
-		if msg.Button != tea.MouseLeft {
-			return nil
-		}
+func (m *tabs) View() string { _ = "STUB: not implemented"; return "" }
 
-		for _, item := range m.items {
-			// Check each item to see if it's in bounds.
-			if zone.Get(m.id + item).InBounds(msg) {
-				m.active = item
-				break
-			}
-		}
-
-		return nil
-	}
-	return nil
-}
-
-func (m *tabs) View() string {
-	out := []string{}
-
-	for _, item := range m.items {
-		// Make sure to mark each tab when rendering.
-		if item == m.active {
-			out = append(out, zone.Mark(m.id+item, activeTab.BorderForeground(highlight).Render(item)))
-		} else {
-			out = append(out, zone.Mark(
-				m.id+item,
-				tab.BorderForeground(highlight).Render(item)),
-			)
-		}
-	}
-	row := lipgloss.JoinHorizontal(lipgloss.Top, out...)
-	gap := tabGap.BorderForeground(highlight).Render(strings.Repeat(" ", max(0, m.width-lipgloss.Width(row)-2)))
-	row = lipgloss.JoinHorizontal(lipgloss.Bottom, row, gap)
-	return row
-}
+// Make sure to mark each tab when rendering.

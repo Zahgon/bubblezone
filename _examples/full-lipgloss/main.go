@@ -35,82 +35,30 @@ type model struct {
 	history *history
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
+func (m model) Init() tea.Cmd { _ = "STUB: not implemented"; return *new(tea.Cmd) }
 
-func (m model) isInitialized() bool {
-	return m.height != 0 && m.width != 0
-}
+func (m model) isInitialized() bool { _ = "STUB: not implemented"; return false }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		// Example of toggling mouse event tracking on/off.
-		if msg.String() == "ctrl+e" {
-			zone.SetEnabled(!zone.Enabled())
-			return m, nil
-		}
-
-		if msg.String() == "ctrl+c" {
-			return m, tea.Quit
-		}
-	case tea.WindowSizeMsg:
-		m.height = msg.Height
-		m.width = msg.Width
-	}
-
-	return m, m.propagate(msg) //nolint:gocritic
+	_ = "STUB: not implemented"
+	return *new(tea.Model), *new(tea.Cmd)
 }
+
+// Example of toggling mouse event tracking on/off.
+
+//nolint:gocritic
 
 func (m model) propagate(msg tea.Msg) tea.Cmd {
+	_ = "STUB: not implemented"
 	// Propagate to all children.
-	cmds := []tea.Cmd{
-		m.tabs.Update(msg),
-		m.dialog.Update(msg),
-		m.list1.Update(msg),
-		m.list2.Update(msg),
-	}
-
-	if msg, ok := msg.(tea.WindowSizeMsg); ok {
-		msg.Height -= m.tabs.GetHeight() +
-			max(m.list1.GetHeight(), m.list2.GetHeight(), m.dialog.GetHeight()) +
-			2 // +1 for bottom margin on tabs, +1 for top margin on history.
-
-		cmds = append(cmds, m.history.Update(msg))
-		return tea.Batch(cmds...)
-	}
-	return tea.Batch(append(cmds, m.history.Update(msg))...)
+	return *new(tea.Cmd)
 }
 
-func (m model) View() tea.View {
-	var view tea.View
-	view.AltScreen = true
-	view.MouseMode = tea.MouseModeCellMotion
+// +1 for bottom margin on tabs, +1 for top margin on history.
 
-	if !m.isInitialized() {
-		return view
-	}
+func (m model) View() tea.View { _ = "STUB: not implemented"; return *new(tea.View) }
 
-	s := lipgloss.NewStyle().MaxHeight(m.height).MaxWidth(m.width)
-
-	// Wrap the main models view in [zone.Scan].
-	view.SetContent(zone.Scan(s.Render(
-		lipgloss.JoinVertical(lipgloss.Top,
-			lipgloss.NewStyle().MarginBottom(1).Render(m.tabs.View()),
-			lipgloss.PlaceHorizontal(
-				m.width, lipgloss.Center,
-				lipgloss.JoinHorizontal(
-					lipgloss.Top,
-					m.list1.View(), m.list2.View(), m.dialog.View(),
-				),
-				lipgloss.WithWhitespaceChars(" "),
-			),
-			lipgloss.NewStyle().MarginTop(1).Render(m.history.View()),
-		),
-	)))
-	return view
-}
+// Wrap the main models view in [zone.Scan].
 
 func main() {
 	// Initialize a global zone manager, so we don't have to pass around the manager

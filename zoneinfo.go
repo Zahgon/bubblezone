@@ -19,47 +19,16 @@ type ZoneInfo struct { // nolint:revive
 }
 
 // IsZero returns true if the zone isn't known yet (is nil).
-func (z *ZoneInfo) IsZero() bool {
-	if z == nil {
-		return true
-	}
-	return z.id == ""
-}
+func (z *ZoneInfo) IsZero() bool { _ = "STUB: not implemented"; return false }
 
 // InBounds returns true if the mouse event was in the bounds of the zones
 // coordinates. If the zone is not known, it returns false. It calculates this
 // using a box between the start and end coordinates. If you're looking to check
 // for abnormal shapes (e.g. something that might wrap a line, but can't be
 // determined using a box), you'll likely have to implement this yourself.
-func (z *ZoneInfo) InBounds(msg tea.MouseMsg) bool {
-	if z.IsZero() {
-		return false
-	}
-
-	if z.StartX > z.EndX || z.StartY > z.EndY {
-		return false
-	}
-
-	event := msg.Mouse()
-
-	if event.X < z.StartX || event.Y < z.StartY {
-		return false
-	}
-	if event.X > z.EndX || event.Y > z.EndY {
-		return false
-	}
-	return true
-}
+func (z *ZoneInfo) InBounds(msg tea.MouseMsg) bool { _ = "STUB: not implemented"; return false }
 
 // Pos returns the coordinates of the mouse event relative to the zone, with a
 // basis of (0, 0) being the top left cell of the zone. If the zone is not known,
 // or the mouse event is not in the bounds of the zone, this will return (-1, -1).
-func (z *ZoneInfo) Pos(msg tea.MouseMsg) (x, y int) {
-	if z.IsZero() || !z.InBounds(msg) {
-		return -1, -1
-	}
-
-	event := msg.Mouse()
-
-	return event.X - z.StartX, event.Y - z.StartY
-}
+func (z *ZoneInfo) Pos(msg tea.MouseMsg) (x, y int) { _ = "STUB: not implemented"; return 0, 0 }

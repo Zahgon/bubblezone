@@ -5,8 +5,6 @@
 package zone
 
 import (
-	"sort"
-
 	tea "charm.land/bubbletea/v2"
 )
 
@@ -19,25 +17,8 @@ type MsgZoneInBounds struct {
 }
 
 func (m *Manager) findInBounds(mouse tea.MouseMsg) []*ZoneInfo {
-	var zones []*ZoneInfo
-
-	m.zoneMu.RLock()
-	defer m.zoneMu.RUnlock()
-
-	keys := make([]string, 0, len(m.zones))
-	for k := range m.zones {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, k := range keys {
-		zone := m.zones[k]
-		if zone.InBounds(mouse) {
-			zones = append(zones, zone)
-		}
-	}
-
-	return zones
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AnyInBoundsAndUpdate is the same as AnyInBounds; except the results of the calls
@@ -45,14 +26,8 @@ func (m *Manager) findInBounds(mouse tea.MouseMsg) []*ZoneInfo {
 //
 // The tea.Cmd's that comd off the calls to Update() are wrapped in tea.Batch().
 func (m *Manager) AnyInBoundsAndUpdate(model tea.Model, mouse tea.MouseMsg) (tea.Model, tea.Cmd) {
-	zones := m.findInBounds(mouse)
-
-	cmds := make([]tea.Cmd, len(zones))
-	for i, zone := range zones {
-		model, cmds[i] = model.Update(MsgZoneInBounds{Zone: zone, Event: mouse})
-	}
-
-	return model, tea.Batch(cmds...)
+	_ = "STUB: not implemented"
+	return *new(tea.Model), *new(tea.Cmd)
 }
 
 // AnyInBounds sends a MsgZoneInBounds message to the provided model for each zone
@@ -62,9 +37,6 @@ func (m *Manager) AnyInBoundsAndUpdate(model tea.Model, mouse tea.MouseMsg) (tea
 // Note that if multiple zones are within bounds, each one will be sent as an event
 // in alphabetical sorted order of the ID.
 func (m *Manager) AnyInBounds(model tea.Model, mouse tea.MouseMsg) {
-	zones := m.findInBounds(mouse)
-
-	for _, zone := range zones {
-		_, _ = model.Update(MsgZoneInBounds{Zone: zone, Event: mouse})
-	}
+	_ = "STUB: not implemented"
+	return
 }

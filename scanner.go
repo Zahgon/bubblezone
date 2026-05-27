@@ -4,12 +4,6 @@
 
 package zone
 
-import (
-	"unicode/utf8"
-
-	"github.com/mattn/go-runewidth"
-)
-
 const (
 	eof = 1
 )
@@ -35,147 +29,51 @@ type scanner struct {
 }
 
 func newScanner(m *Manager, input string, iteration int) *scanner {
-	return &scanner{
-		manager:   m,
-		enabled:   m.Enabled(),
-		iteration: iteration,
-		input:     input,
-		tracked:   make(map[string]*ZoneInfo),
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // run initializes the scanner and starts the state machine.
-func (s *scanner) run() {
-	for state := scanMain; state != nil; {
-		state = state(s)
-	}
-}
+func (s *scanner) run() { _ = "STUB: not implemented"; return }
 
 // emit adds the current marker to the tracked map. If two markers are received,
 // it is sent back to the manager.
 func (s *scanner) emit() {
-	if !s.enabled {
-		// If the manager is disabled, we don't need to track anything, just strip
-		// the markers from the resulting output.
-		s.input = s.input[:s.start] + s.input[s.pos:]
-		s.pos = s.start
-		return
-	}
+	_ = "STUB: not implemented"
 
-	rid := s.input[s.start:s.pos]
-	if item, ok := s.tracked[rid]; ok {
-		// The end should be - 1, because it's the end of the encapsulation of the
-		// zone, and isn't actually taking up another space.
-		item.EndX = printableRuneWidth(s.input[s.lastNewline:s.start]) - 1
-		item.EndY = s.newlines
-
-		s.manager.setChan <- item
-
-		delete(s.tracked, rid)
-	} else {
-		s.tracked[rid] = &ZoneInfo{
-			id:        rid,
-			iteration: s.iteration,
-			StartX:    printableRuneWidth(s.input[s.lastNewline:s.start]),
-			StartY:    s.newlines,
-		}
-	}
-
-	s.input = s.input[:s.start] + s.input[s.pos:]
-	s.pos = s.start
+	// If the manager is disabled, we don't need to track anything, just strip
+	// the markers from the resulting output.
+	return
 }
+
+// The end should be - 1, because it's the end of the encapsulation of the
+// zone, and isn't actually taking up another space.
 
 // next returns the next rune in the input, incrementing the position.
-func (s *scanner) next() (r rune) {
-	if s.pos >= len(s.input) {
-		s.width = 0
-		return eof
-	}
-
-	r, s.width = utf8.DecodeRuneInString(s.input[s.pos:])
-	s.pos += s.width
-
-	return r
-}
+func (s *scanner) next() (r rune) { _ = "STUB: not implemented"; return 0 }
 
 // backup steps back one rune. Can only be called once per call of next.
 func (s *scanner) backup() {
-	s.pos -= s.width
+	_ = "STUB: not implemented"
+
+	// peek steps forward one rune, reads, and backs up again.
+	return
 }
 
-// peek steps forward one rune, reads, and backs up again.
-func (s *scanner) peek() rune {
-	r := s.next()
-	s.backup()
-	return r
-}
+func (s *scanner) peek() rune { _ = "STUB: not implemented"; return 0 }
 
 // scanMain is the entrypoint into the state machine.
-func scanMain(s *scanner) stateFn {
-	switch r := s.next(); r {
-	case eof:
-		return nil
-	case '\n':
-		s.newlines++
-		s.lastNewline = s.pos
-		return scanMain
-	case identStart:
-		s.start = s.pos - 1
-		return scanID
-	default:
-		return scanMain
-	}
-}
+func scanMain(s *scanner) stateFn { _ = "STUB: not implemented"; return *new(stateFn) }
 
 // scanID scans forward, matching a marker, otherwise cancelling and returning
 // to scanMain if a valid marker isn't found.
-func scanID(s *scanner) stateFn {
-	if s.peek() != identBracket {
-		return scanMain
-	}
-	s.next()
+func scanID(s *scanner) stateFn { _ = "STUB: not implemented"; return *new(stateFn) }
 
-	if !isNumber(s.peek()) {
-		return scanMain
-	}
-
-	for isNumber(s.peek()) {
-		s.next()
-	}
-
-	if s.peek() != identEnd {
-		return scanMain
-	}
-	s.next()
-
-	s.emit()
-	return scanMain
-}
-
-func isNumber(r rune) bool {
-	if r < '0' || r > '9' {
-		return false
-	}
-	return true
-}
+func isNumber(r rune) bool { _ = "STUB: not implemented"; return false }
 
 // printableRuneWidth returns the printable cell width of the given string.
-func printableRuneWidth(s string) int {
-	var n int
-	var ansi bool
+func printableRuneWidth(s string) int { _ = "STUB: not implemented"; return 0 }
 
-	for _, c := range s {
-		if c == identStart { // Start of ANSI escape sequence.
-			ansi = true
-		} else if ansi {
-			// Check if at the end of an ANSI escape sequence (terminator).
-			if (c >= 0x40 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a) {
-				ansi = false
-			}
-		} else {
-			n += runewidth.RuneWidth(c)
-		}
-	}
+// Start of ANSI escape sequence.
 
-	return n
-}
+// Check if at the end of an ANSI escape sequence (terminator).
